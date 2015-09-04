@@ -73,7 +73,7 @@ def game_loop(players):
         print game_board
 
 def print_game_board(game_board):
-
+    return
 
 stupid_player = lambda x, y: int(random()*81)
 

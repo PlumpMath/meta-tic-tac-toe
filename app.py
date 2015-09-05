@@ -22,7 +22,7 @@ def make_game_board():
     return [0 for i in range(81)]
 
 def is_move_valid(game_board, move, prev_move):
-    if move == -1:
+    if isinstance(move, (int, long)) is not True or move < 0 or move >= 81:
         return False
 
     square          = get_box_number(prev_move)

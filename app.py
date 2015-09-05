@@ -70,16 +70,15 @@ def get_winner(game_board):
 
 def make_move(game_board, player_id, player, prev_move):
     m = -1
-    move_counter = 0
+    attempts = 0
 
     while is_move_valid(game_board, m, prev_move) is not True:
         m = player(game_board, prev_move)
-        move_counter += 1
-        if move_counter > 400:
+        attempts += 1
+        if attempts > 1:
             return -2
 
-    if move_counter > 0:
-        game_board[m] = player_id
+    game_board[m] = player_id
 
     return m
 
@@ -98,7 +97,9 @@ def game_loop(players):
                     print ["MOVE #", move_counter, "BY", char_chart[current_player + 1]]
                     print_game_board(game_board)
 
-        winner = get_winner(game_board)
+                winner = get_winner(game_board)
+            else:
+                winner = O if current_player is X else X
 
     return winner
 
@@ -131,4 +132,17 @@ def print_game_board(game_board):
             print ""
 
 stupid_player = lambda x, y: int(random()*81)
-print char_chart[game_loop([stupid_player, stupid_player])]
+
+def less_stupid_player(game_board, prev_move):
+    m = -1
+    attempts = 0
+
+    while is_move_valid(game_board, m, prev_move) is not True:
+        m = int(random()*81)
+        attempts += 1
+        if attempts > 100:
+            break
+
+    return m
+
+print char_chart[game_loop([less_stupid_player, less_stupid_player])]

@@ -5,6 +5,7 @@ NO_MOVE = 0
 X = 1
 O = 2
 char_chart = ["-", "X", "O"]
+debug = True
 
 WINNING_STRUCTURES = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
@@ -52,21 +53,20 @@ def square_winner(game_board, square):
 
     return NO_MOVE
 
-def game_over(game_board):
+def get_winner(game_board):
     for x in WINNING_STRUCTURES:
         s0 = square_winner(game_board, x[0])
         if s0 == square_winner(game_board, x[1]) == square_winner(game_board, x[2]) and s0 is not NO_MOVE:
-            print ["GAME OVER", char_chart[s0]]
-            return True
+            return s0
 
     full = True
     for i in range(9):
         full = full and (square_full(game_board, i) or square_winner(game_board, i) is not NO_MOVE)
 
     if full is True:
-        print ["GAME OVER", "TIE"]
+        return NO_MOVE
 
-    return full
+    return -1
 
 def make_move(game_board, player_id, player, prev_move):
     m = -1
@@ -87,14 +87,20 @@ def game_loop(players):
     game_board = make_game_board()
     move_counter = 0
     prev_move = -1
+    winner = -1
 
-    while game_over(game_board) is False:
+    while winner is -1:
         for current_player in [0, 1]:
             prev_move = make_move(game_board, current_player + 1, players[current_player], prev_move)
             if prev_move >= 0:
                 move_counter += 1
-                print ["MOVE #", move_counter, "BY", char_chart[current_player + 1]]
-                print_game_board(game_board)
+                if debug is True:
+                    print ["MOVE #", move_counter, "BY", char_chart[current_player + 1]]
+                    print_game_board(game_board)
+
+        winner = get_winner(game_board)
+
+    return winner
 
 def print_game_board(game_board):
     output = ""
@@ -125,4 +131,4 @@ def print_game_board(game_board):
             print ""
 
 stupid_player = lambda x, y: int(random()*81)
-game_loop([stupid_player, stupid_player])
+print char_chart[game_loop([stupid_player, stupid_player])]
